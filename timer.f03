@@ -1,8 +1,8 @@
 !
 ! Author: Rongyang Sun <sun-rongyang@outlook.com>
-! Creation Date: 2018-05-22
+! Creation Date: 2018-05-25
 ! 
-! Description: zzdmrg-fortran project. A timer class.
+! Description: ftiming project. A timer class, ref [Chapman 2008].
 !
 
 
