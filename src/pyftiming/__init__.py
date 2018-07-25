@@ -4,60 +4,9 @@
 #  
 #  Description: ftiming project. `pyftiming` package.
 # 
+from .tim_case import *
+
 import re
-
-
-class RoutTimColl(object):
-
-  """Routine timing collection. """
-
-  def __init__(self, routine, times, tot, max, min):
-    """Initialize  a RoutTimColl obj.
-
-    :routine: str
-        Name of the routine.
-    :times: int
-        Times of routine called.
-    :tot: float
-        Total time used.
-    :max: float
-        Maximal time used.
-    :min: float
-        Minimal time used.
-
-    """
-    self.routine = routine
-    self.times = times
-    self.tot = tot
-    self.max = max
-    self.min = min
-    
-  def get_avg_time(self):
-    """Get average time for the routine. """
-    self.avg = float(self.tot) / self.times
-
-
-class TimCase(object):
-
-  """Contain timing data and properties for a case. """
-
-  def __init__(self, data=None, props=None):
-    """Initialise a timing test case.
-
-    :data: dict
-        Key is the name of the routine,
-        value is a RoutTimColl obj.
-    :props: dict
-
-    """
-    if data is None:
-      self.data = {}
-    else:
-      self.data = dict(data)
-    if props is None:
-      self.props = {}
-    else:
-      self.props = dict(props)
 
 
 def load_timing_log(log):
@@ -69,27 +18,32 @@ def load_timing_log(log):
       Contain data in this timing case.
 
   """
-  timing_log = _clean_log_data(log)
-  routines = []
-  routtimcolls = {}
-  for item in timing_log:
-    routine = item[0]
-    elag_time = item[1]
-    if routine in routines:
-      routtimcoll = routtimcolls[routine]
-      routtimcoll.times += 1
-      routtimcoll.tot += elag_time
-      routtimcoll.max = max(routtimcoll.max, elag_time)
-      routtimcoll.min = min(routtimcoll.min, elag_time)
-    else:
-      routines.append(routine)
-      routtimcolls.update({routine: RoutTimColl(routine,
-                                                1,
-                                                elag_time,
-                                                elag_time,
-                                                elag_time)})
-  for rtc in routtimcolls.values(): rtc.get_avg_time()
-  return TimCase(data=routtimcolls)
+  try:
+    return TimCase.load(log)
+  except:
+    timing_log = _clean_log_data(log)
+    routines = []
+    routtimcolls = {}
+    for item in timing_log:
+      routine = item[0]
+      elag_time = item[1]
+      if routine in routines:
+        routtimcoll = routtimcolls[routine]
+        routtimcoll.times += 1
+        routtimcoll.tot += elag_time
+        routtimcoll.max = max(routtimcoll.max, elag_time)
+        routtimcoll.min = min(routtimcoll.min, elag_time)
+      else:
+        routines.append(routine)
+        routtimcolls.update({routine: RoutTimColl(routine,
+                                                  1,
+                                                  elag_time,
+                                                  elag_time,
+                                                  elag_time)})
+    for rtc in routtimcolls.values(): rtc.get_avg_time()
+    timing_case = TimCase(data=routtimcolls)
+    timing_case.dump(log)
+    return timing_case
 
 
 def _clean_log_data(log):
