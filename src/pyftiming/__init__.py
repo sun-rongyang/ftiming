@@ -4,7 +4,7 @@
 #  
 #  Description: ftiming project. `pyftiming` package.
 # 
-from .tim_case import *
+from .tim_case_data import *
 
 import re
 

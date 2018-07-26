@@ -6,6 +6,7 @@
 # 
 import json
 from os.path import basename, splitext
+from collections import namedtuple
 
 
 class RoutTimColl(object):
@@ -90,11 +91,7 @@ class TimCase(object):
     return 0
 
 
-def _get_js_file(log):
-  file_name = basename(log)
-  path = log.replace(file_name, '')
-  basename_ = splitext(file_name)[0]
-  return path + basename_ + '.json'
+RoutPair = namedtuple('RoutPair', ['target_routine', 'parent_routine'])
 
 
 class TimCaseJSONEncoder(json.JSONEncoder):
@@ -140,3 +137,10 @@ class TimCaseJSONDecoder(json.JSONDecoder):
       return TimCase(data=data, props=props)
     except:
       return obj
+
+
+def _get_js_file(log):
+  file_name = basename(log)
+  path = log.replace(file_name, '')
+  basename_ = splitext(file_name)[0]
+  return path + basename_ + '.json'
